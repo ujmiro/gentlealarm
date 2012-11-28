@@ -1,5 +1,6 @@
 package DB;
 
+import DB.POCO.Alarm;
 import DB.POCO.User;
 import java.sql.*;
 import android.content.Context;
@@ -15,7 +16,7 @@ import com.j256.ormlite.table.TableUtils;
 public class OrmManager extends OrmLiteSqliteOpenHelper {
 
 		// name of the database file for your application -- change to something appropriate for your app
-		private static final String DATABASE_NAME = "helloAndroid.db";
+		private static final String DATABASE_NAME = "AlarmData.db";
 		// any time you make changes to your database objects, you may have to increase the database version
 		private static final int DATABASE_VERSION = 1;
 
@@ -35,6 +36,7 @@ public class OrmManager extends OrmLiteSqliteOpenHelper {
 			try {
 				Log.i(OrmManager.class.getName(), "onCreate");
 				TableUtils.createTable(connectionSource, User.class);
+				TableUtils.createTable(connectionSource, Alarm.class);
 			} catch (SQLException e) {
 				Log.e(OrmManager.class.getName(), "Can't create database", e);
 				throw new RuntimeException(e);
@@ -45,7 +47,6 @@ public class OrmManager extends OrmLiteSqliteOpenHelper {
 			// create some entries in the onCreate
 			User simple = new User();
 			simple.setName("Ala2");
-			simple.setPassword("password2");
 			dao.create(simple);
 		}
 

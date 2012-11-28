@@ -3,7 +3,9 @@ package DB.POCO;
 import java.sql.Date;
 
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
 
+@DatabaseTable(tableName = "Users")
 public class User {
 	@DatabaseField(generatedId = true)
 	private int id;
@@ -11,8 +13,6 @@ public class User {
 	private String name;
 	@DatabaseField(canBeNull = true)
 	private Date createdAt;
-	@DatabaseField(canBeNull = false)
-	private String password;
 
 	public User() {
 		// needed by ormlite
@@ -40,13 +40,5 @@ public class User {
 
 	public void setCreatedAt(Date createdAt) {
 		this.createdAt = createdAt;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 }
