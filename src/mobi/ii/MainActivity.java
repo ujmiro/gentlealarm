@@ -1,5 +1,6 @@
 package mobi.ii;
 
+import java.util.Calendar;
 import java.util.List;
 
 import DB.OrmManager;
@@ -9,6 +10,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -36,10 +38,16 @@ public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
 			
 			public void onClick(View v) {
 				AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-				Intent intent = new Intent(MainActivity.this, WakeUpActivity.class);
+				Intent intent = new Intent(MainActivity.this, WakeUpReceiver.class);
 				if (pendingIntent == null)
-					pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+					pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
+				Log.w("AlarmManager", "set");
 				
+				Calendar calendar = Calendar.getInstance();
+		        calendar.setTimeInMillis(System.currentTimeMillis());
+		        calendar.add(Calendar.SECOND, 6);
+		           
+				alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 			}
 		});
     }
