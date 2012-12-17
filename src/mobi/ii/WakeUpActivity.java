@@ -10,18 +10,35 @@ import android.util.Log;
 
 public class WakeUpActivity extends Activity {
 
+	private WakeLock wl;
+	private KeyguardLock keyguard;
 
-		
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		Log.w("AlarmManager", "onCreate");
 		super.onCreate(savedInstanceState);
-	   setContentView(R.layout.wake_up);
-	}
-	
+	   setContentView(R.layout.wake_up);	    
+		unlockScreean();
+	}	
+
 	@Override
 	public void onDestroy(){
 		super.onDestroy();
-		Log.w("AlarmManager", "releasing");
+		lockScreean();
+	}
+	
+	private void unlockScreean(){
+		PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+		wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, "mobi.ii.WakeUpActivity");
+		wl.acquire();
+		
+		KeyguardManager km = (KeyguardManager) getSystemService(Context.KEYGUARD_SERVICE);
+	    keyguard = km.newKeyguardLock("MyApp");
+	    keyguard.disableKeyguard();
+	}
+	
+	private void lockScreean(){
+		keyguard.reenableKeyguard();
+		wl.release();
 	}
 }
