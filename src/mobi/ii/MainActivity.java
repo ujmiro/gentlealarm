@@ -1,6 +1,7 @@
 package mobi.ii;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import DB.OrmManager;
@@ -22,7 +23,6 @@ import com.j256.ormlite.dao.RuntimeExceptionDao;
 public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
 	
 	private TimePicker timePicker;
-	private Button startButton;
 	private PendingIntent pendingIntent;
 	
     @Override
@@ -33,7 +33,7 @@ public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
         timePicker = (TimePicker) findViewById(R.id.alarmTimePicker);
         timePicker.setIs24HourView(true);
         
-        startButton = (Button) findViewById(R.id.enableAlarmButton);
+        Button startButton = (Button) findViewById(R.id.enableAlarmButton);
         startButton.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
@@ -41,13 +41,35 @@ public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
 				Intent intent = new Intent(MainActivity.this, WakeUpReceiver.class);
 				if (pendingIntent == null)
 					pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
-				Log.w("AlarmManager", "set");
 				
-				Calendar calendar = Calendar.getInstance();
-		        calendar.setTimeInMillis(System.currentTimeMillis());
-		        calendar.add(Calendar.SECOND, 6);
-		           
+				GregorianCalendar calendar = new GregorianCalendar();
+				if (calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE) >= timePicker.getCurrentHour() * 60 + timePicker.getCurrentMinute()){
+					calendar.add(Calendar.DAY_OF_YEAR, 1);
+				}
+				calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
+				calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
+						       		           
 				alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+			}
+		});
+        
+        Button stopButton = (Button) findViewById(R.id.disableAlarmButton);
+        stopButton.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+
+			    Intent updateServiceIntent = new Intent(MainActivity.this, WakeUpReceiver.class);
+			    PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(MainActivity.this, 0, updateServiceIntent, 0);
+
+			    // Cancel alarms
+			    try {
+			        alarmManager.cancel(pendingUpdateIntent);
+			        Log.w("AlarmManager update was not canceled. ",  "called");
+			    } catch (Exception e) {
+			        Log.w("AlarmManager update was not canceled. ",  e.toString());
+			    }
+				
 			}
 		});
     }

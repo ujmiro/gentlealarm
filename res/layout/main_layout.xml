@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:gravity="left"
+    android:gravity="center"
     android:orientation="vertical" >
 
     <TextView
@@ -10,23 +10,15 @@
         android:layout_width="53dp"
         android:layout_height="wrap_content"
         android:text="Hi" />
-
+
     <TimePicker
         android:id="@+id/alarmTimePicker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/textView1"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="26dp" />
-
-    <Button
-        android:id="@+id/enableAlarmButton"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/alarmTimePicker"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="start" />
 
     <Button
         android:id="@+id/disableAlarmButton"
@@ -36,5 +28,15 @@
         android:layout_marginBottom="21dp"
         android:layout_centerHorizontal="true"
         android:text="stop" />
+
+    <Button
+        android:id="@+id/enableAlarmButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/alarmTimePicker"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="71dp"
+        android:text="START"
+        android:textSize="20dp" />
 
 </RelativeLayout>
