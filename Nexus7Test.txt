@@ -1,0 +1,1 @@
+Przeprowadzilem testy aplikacji na tablecie Google Nexus 7. Wszystkie zaimplementowane w iteracji 2 funkcje dzialaja poprawnie.
