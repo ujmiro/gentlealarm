@@ -1,6 +1,5 @@
 package mobi.ii;
 
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -8,6 +7,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import DB.OrmManager;
+import DB.POCO.Alarm;
 import Singletons.Common;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -20,6 +20,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TimePicker;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
@@ -27,22 +28,30 @@ public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
 	
 	private TimePicker timePicker;
 	private PendingIntent pendingIntent;
+	public final static int BREAK_TIME = 1;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_layout);
         
-        setTimePicker();
-        addListnerToDisableButton();
-        addListnerToEnableButton();
-        addListnerToSettingsButton();
-        
 		try {
 		 	Common.getInstance().setUser(getHelper().getUserDao().queryBuilder().where().eq("Name", "DefoultUSer").query().get(0));
 		} catch (SQLException e) {
 			finish();
 		}
+		
+		setStatusToggleButton();
+        setTimePicker();
+        addListnerToDisableButton();
+        addListnerToEnableButton();
+        addListnerToSettingsButton();
+    }
+    
+    private void setStatusToggleButton(){
+    	ToggleButton toggle = (ToggleButton) findViewById(R.id.onOfToggle);
+    	toggle.setEnabled(false);
+    	toggle.setChecked(!Common.getInstance().getAlarms()[0].isExecuted());
     }
     
     private void setTimePicker(){
@@ -52,13 +61,11 @@ public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
         	timePicker.setCurrentHour(timePicker.getCurrentHour() + 12);
         
         try {
-			FileInputStream savedTime = openFileInput("AlarmDateTime");
-			byte[] text = new byte[100000];
-			savedTime.read(text);
-			String time = new String(text);
-			timePicker.setCurrentHour(Integer.valueOf(time.substring(0, time.indexOf(":"))));
-			timePicker.setCurrentMinute(Integer.valueOf(time.substring(time.indexOf(":") + 1, time.indexOf(";"))));
-			
+        	Alarm alarm = Common.getInstance().getAlarms()[0];
+			GregorianCalendar calendar = new GregorianCalendar();
+			calendar.setTimeInMillis(alarm.getAlarmAt());
+			timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
+			timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
 		} catch (Exception e) {
 			Log.w("Exception", "Create main view.");
 		}
@@ -71,9 +78,6 @@ public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
 			public void onClick(View v) {
 				timePicker.clearFocus();
 				AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-				Intent intent = new Intent(MainActivity.this, WakeUpReceiver.class);
-				if (pendingIntent == null)
-					pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, 0);// PendingIntent.FLAG_UPDATE_CURRENT);
 				
 				GregorianCalendar calendar = new GregorianCalendar();
 				if (calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE) >= timePicker.getCurrentHour() * 60 + timePicker.getCurrentMinute()){
@@ -81,7 +85,33 @@ public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
 				}
 				calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
 				calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
-
+				calendar.set(Calendar.SECOND, 0);
+				
+				Alarm alarm = Common.getInstance().getAlarms()[0];
+				alarm.setAlarmAt(calendar);
+				alarm.setExecuted(false);
+				try {
+					MainActivity.this.getHelper().getAlarmDao().update(alarm);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				
+				int startFromPhase = 0;
+				for (int i = 1; i <= Common.getInstance().getUser().getPhaseAmount(); ++i){
+					if (calendar.getTimeInMillis() - BREAK_TIME * 60 * 1000 < new GregorianCalendar().getTimeInMillis())
+						break;
+					
+					calendar.add(Calendar.MINUTE, -BREAK_TIME);
+					startFromPhase = i;
+				}
+				
+				Intent intent = new Intent(MainActivity.this, WakeUpReceiver.class);
+			    intent.putExtra("userId", Common.getInstance().getUser().getId());
+				intent.putExtra("startFromPhase", startFromPhase);
+				
+				pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+				
+				
 				alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
 				String time =  timePicker.getCurrentHour() + ":" + timePicker.getCurrentMinute();
 				
@@ -93,8 +123,9 @@ public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
 					e.printStackTrace();
 				}
 				
-				Toast toast = Toast.makeText(getApplicationContext(), "Alarm ustawiony na " + time, Toast.LENGTH_SHORT);
+				Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.alarmEnableTogle) + time, Toast.LENGTH_SHORT);
 				toast.show();
+				setStatusToggleButton();
 			}
 		});
     }
@@ -126,9 +157,18 @@ public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
 				} catch (Exception e) {
 					Log.w("AlarmManager update was not canceled. ", e.toString());
 				}
-				Toast toast = Toast.makeText(getApplicationContext(), "Alarm wy³¹czony", Toast.LENGTH_SHORT);
+				Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.alarmDisableTogle), Toast.LENGTH_SHORT);
 				toast.show();
- 			}
+				
+				Alarm alarm = Common.getInstance().getAlarms()[0];
+				alarm.setExecuted(true);
+				try {
+					MainActivity.this.getHelper().getAlarmDao().update(alarm);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				setStatusToggleButton();
+	        }
  		});
     }
 }

@@ -1,6 +1,6 @@
 package DB.POCO;
 
-import java.sql.Date;
+import java.util.GregorianCalendar;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;
@@ -10,7 +10,7 @@ public class Alarm {
 	@DatabaseField(generatedId = true)
 	private int id;
 	@DatabaseField(canBeNull = false)
-	private Date alarmAt;
+	private long alarmAt;
 	@DatabaseField(foreign = true)
 	private User user;
 	@DatabaseField(canBeNull = false, columnName="Executed")
@@ -28,11 +28,11 @@ public class Alarm {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public Date getAlarmAt() {
+	public long getAlarmAt() {
 		return alarmAt;
 	}
-	public void setAlarmAt(Date alarmAt) {
-		this.alarmAt = alarmAt;
+	public void setAlarmAt(GregorianCalendar alarmAt) {
+		this.alarmAt = alarmAt.getTimeInMillis();
 	}
 	public User getUser() {
 		return user;

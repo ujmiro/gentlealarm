@@ -4,6 +4,7 @@ import DB.POCO.Alarm;
 import DB.POCO.Setting;
 import DB.POCO.User;
 import java.sql.*;
+import java.util.GregorianCalendar;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -53,6 +54,12 @@ public class OrmManager extends OrmLiteSqliteOpenHelper {
 					setting.setVolume(100 - (25 * (i - 1)));
 					getSettingDao().create(setting);
 				}
+				
+				Alarm alarm = new Alarm();
+				alarm.setAlarmAt(new GregorianCalendar());
+				alarm.setUser(defaultUser);
+				alarm.setExecuted(true);
+				getAlarmDao().create(alarm);
 			} catch (SQLException e) {
 				System.exit(-100);
 			}
@@ -79,7 +86,7 @@ public class OrmManager extends OrmLiteSqliteOpenHelper {
 		
 		public Dao<Alarm, Integer> getAlarmDao() throws SQLException {
 			if (alarmDao == null) {
-				alarmDao = getDao(User.class);
+				alarmDao = getDao(Alarm.class);
 			}
 			return alarmDao;
 		}

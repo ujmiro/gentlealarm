@@ -3,6 +3,8 @@ package mobi.ii;
 import java.sql.SQLException;
 import java.util.Arrays;
 
+import media.managers.SoundManager;
+
 import DB.OrmManager;
 import DB.POCO.Setting;
 
@@ -43,20 +45,21 @@ public class PhaseSettingsActivity extends OrmLiteBaseActivity<OrmManager>{
 		test.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
-				showDialog();
+				SoundManager soundManager = new SoundManager(PhaseSettingsActivity.this);
+				soundManager.startAlarm(seekBar.getProgress());
+				showDialog(soundManager);
 			}
 		});
-		
 	}
 	
-	private void showDialog(){
+	private void showDialog(final SoundManager soundManager){
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-			alertDialogBuilder.setTitle("Testing");
-			alertDialogBuilder.setMessage("Naciœnij ok aby zakoñczyæ.")
+			alertDialogBuilder.setTitle(getResources().getString(R.string.testDialogTitle));
+			alertDialogBuilder.setMessage(getResources().getString(R.string.testDialogMessage))
 							  .setCancelable(false)
-							  .setPositiveButton("Zakoñcz",new DialogInterface.OnClickListener() {
+							  .setPositiveButton(getResources().getString(R.string.closeDialogButtonLabel),new DialogInterface.OnClickListener() {
 									public void onClick(DialogInterface dialog,int id) {
-										
+										soundManager.stopAlarm();
 									}
 								  });
 				AlertDialog alertDialog = alertDialogBuilder.create();
@@ -65,7 +68,6 @@ public class PhaseSettingsActivity extends OrmLiteBaseActivity<OrmManager>{
 	
 	private void addSaveButtonOnClickListener(){
 		Button save = (Button)findViewById(R.id.saveButton);
-		final PhaseSettingsActivity current = this;
 		save.setOnClickListener(new OnClickListener() {
 			
 			public void onClick(View v) {
@@ -76,7 +78,7 @@ public class PhaseSettingsActivity extends OrmLiteBaseActivity<OrmManager>{
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-				current.finish();
+				PhaseSettingsActivity.this.finish();
 			}
 		});
 	}

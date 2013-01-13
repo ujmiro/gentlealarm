@@ -10,8 +10,9 @@ public class WakeUpReceiver extends BroadcastReceiver{
 	@Override
 	public void onReceive(Context ctx, Intent inte) {
 		Log.w("AlarmManager", "onReceive");
-		Intent intent = new Intent(ctx, WakeUpActivity.class);
+		Intent intent = new Intent(inte);
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		intent.setClass(ctx, WakeUpActivity.class);		
 		ctx.startActivity(intent);
 	}
 }

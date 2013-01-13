@@ -23,13 +23,22 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="22dp" />
+    
+    <Button
+        android:id="@+id/testButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/volumeValue"
+        android:layout_below="@+id/volumeValue"
+        android:layout_marginTop="5dp" 
+        android:text="@string/testButton" />
 
     <TextView
         android:id="@+id/timeLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/volumeText"
-        android:layout_below="@+id/volumeValue"
+        android:layout_below="@+id/testButton"
         android:layout_marginTop="20dp"
         android:text="@string/setTimeLabel"
         android:textAppearance="?android:attr/textAppearanceMedium" />
@@ -41,14 +50,6 @@
         android:layout_alignTop="@+id/timeLabel"
         android:layout_toRightOf="@+id/timeLabel"
         android:entries="@array/timeArrays" />
-
-    <Button
-        android:id="@+id/testButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/volumeValue"
-        android:layout_centerVertical="true"
-        android:text="@string/testButton" />
 
     <Button
         android:id="@+id/saveButton"

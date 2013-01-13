@@ -14,6 +14,11 @@
     <string name="startButtonLabel">START</string>
     <string name="wakeUpMainLabel">Budze cie</string>
 	<string name="saveButtonLabel">Zapisz</string>
+	<string name="testDialogTitle">Testuje</string>
+	<string name="testDialogMessage">Naciśnij ok aby zakończyć.</string>
+	<string name="closeDialogButtonLabel">Zamknij</string>
+	<string name="alarmEnableTogle">Alarm ustawiony na</string>
+	<string name="alarmDisableTogle">Alarm wyłączony</string>
 	
     <string-array name="phaseAmountArrays">
         <item>1</item>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Student Gentle Alarm</string>
+    <string name="amountOfPhaseButton">Amount of alarms</string>
+    <string name="setFirstPhase">First alarm</string>
+    <string name="setSecondPhase">Second alarm</string>
+    <string name="setThirdPhase">Third alarm</string>
+    <string name="setFourthPhase">Fourth alarm</string>
+    <string name="setVolumeLabel">Volume</string>
+    <string name="setTimeLabel">Play music for</string>
+    <string name="testButton">Test</string>
+    <string name="stopButtonLable">STOP</string>
+    <string name="settingsButtonLable">Settings</string>
+    <string name="startButtonLabel">START</string>
+    <string name="wakeUpMainLabel">I am waking you up !!!</string>
+	<string name="saveButtonLabel">Save</string>
+	<string name="testDialogTitle">Test</string>
+	<string name="testDialogMessage">Press close to finish.</string>
+	<string name="closeDialogButtonLabel">Close</string>
+	<string name="alarmEnableTogle">Alarm set to</string>
+	<string name="alarmDisableTogle">Alarm disabled</string>
+	
+    <string-array name="phaseAmountArrays">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    
+    <string-array name="timeArrays">
+        <item>10 s</item>
+        <item>30 s</item>
+        <item>45 s</item>
+        <item>1 min</item>
+        <item>2 min</item>
+        <item>5 min</item>
+    </string-array>
+</resources>
