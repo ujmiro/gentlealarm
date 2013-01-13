@@ -9,7 +9,7 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
-        
+       
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
@@ -25,6 +25,8 @@
         
         <activity android:name=".WakeUpActivity"></activity>
         <receiver android:name=".WakeUpReceiver"></receiver>
+        <activity android:name=".SettingsActivity"></activity>
+        <activity android:name=".PhaseSettingsActivity"></activity>
     </application>
 
 </manifest>

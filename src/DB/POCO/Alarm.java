@@ -13,7 +13,15 @@ public class Alarm {
 	private Date alarmAt;
 	@DatabaseField(foreign = true)
 	private User user;
+	@DatabaseField(canBeNull = false, columnName="Executed")
+	private boolean executed;
 	
+	public boolean isExecuted() {
+		return executed;
+	}
+	public void setExecuted(boolean executed) {
+		this.executed = executed;
+	}
 	public int getId() {
 		return id;
 	}

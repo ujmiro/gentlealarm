@@ -2,6 +2,62 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/amountOfPhaseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:editable="false"
+        android:text="@string/amountOfPhaseButton"
+        android:textSize="15dp" />
+
+    <Spinner
+        android:id="@+id/phaseSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/amountOfPhaseButton"
+        android:layout_toRightOf="@+id/amountOfPhaseButton"
+        android:entries="@array/phaseAmountArrays" />
+
+    <Button
+        android:id="@+id/setFirstPhaseButton"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/phaseSpinner"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="@string/setFirstPhase" />
+
+    <Button
+        android:id="@+id/setSecondPhaseButton"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/setFirstPhaseButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="@string/setSecondPhase" />
+
+    <Button
+        android:id="@+id/setThirdPhaseButton"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/setSecondPhaseButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="@string/setThirdPhase" />
+
+    <Button
+        android:id="@+id/setFourthPhaseButton"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/setThirdPhaseButton"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="@string/setFourthPhase" />
 
 </RelativeLayout>

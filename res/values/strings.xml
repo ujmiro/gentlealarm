@@ -1,4 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Student Gentle Alarm</string>
+    <string name="app_name">Delikatny Alarm</string>
+    <string name="amountOfPhaseButton">Ilość cykli budzenia</string>
+    <string name="setFirstPhase">Pierwszy budzik</string>
+    <string name="setSecondPhase">Drugi budzik</string>
+    <string name="setThirdPhase">Trzeci budzik</string>
+    <string name="setFourthPhase">Czwarty budzik</string>
+    <string name="setVolumeLabel">Ustaw głośność</string>
+    <string name="setTimeLabel">Ustaw czas budzenia</string>
+    <string name="testButton">Test</string>
+    <string name="stopButtonLable">STOP</string>
+    <string name="settingsButtonLable">Ustawienia</string>
+    <string name="startButtonLabel">START</string>
+    <string name="wakeUpMainLabel">Budze cie</string>
+	<string name="saveButtonLabel">Zapisz</string>
+	
+    <string-array name="phaseAmountArrays">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+    </string-array>
+    
+    <string-array name="timeArrays">
+        <item>10 s</item>
+        <item>30 s</item>
+        <item>45 s</item>
+        <item>1 min</item>
+        <item>2 min</item>
+        <item>5 min</item>
+    </string-array>
+
 </resources>
