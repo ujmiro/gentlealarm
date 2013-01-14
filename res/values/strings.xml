@@ -19,6 +19,29 @@
 	<string name="closeDialogButtonLabel">Zamknij</string>
 	<string name="alarmEnableTogle">Alarm ustawiony na</string>
 	<string name="alarmDisableTogle">Alarm wyłączony</string>
+	<string name="setAlarmAudionButtonLabel">Ustaw dźwięk</string>
+	<string name="addAlarmButtonLabel">Dodaj alarm</string>
+	<string name="deleteAlarmAlertTitle">Usunąć wybrany alarm ?</string>
+	<string name="deleteAlarmButtonLabel">Usuń</string>
+	<string name="cancelButtonLabel">Anuluj</string>
+	<string name="mondayLabel">P</string>
+	<string name="tuesdayLabel">W</string>
+	<string name="wednesdayLabel">Ś</string>
+	<string name="thursdayLabel">C</string>
+	<string name="fridayLabel">P</string>
+	<string name="saturdayLabel">S</string>
+	<string name="sundayLabel">N</string>
+	
+	<string-array name="dayOfWeek">
+	    <item>Empty</item>
+        <item>@string/sundayLabel</item>
+        <item>@string/mondayLabel</item>
+        <item>@string/tuesdayLabel</item>
+        <item>@string/wednesdayLabel</item>
+        <item>@string/thursdayLabel</item>
+        <item>@string/fridayLabel</item>
+        <item>@string/saturdayLabel</item>
+    </string-array>	
 	
     <string-array name="phaseAmountArrays">
         <item>1</item>

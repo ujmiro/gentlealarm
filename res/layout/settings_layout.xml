@@ -5,13 +5,22 @@
     android:gravity="center_horizontal"
     android:orientation="vertical" >
 
+    <Button
+        android:id="@+id/setAlarmAudionButton"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/setAlarmAudionButtonLabel" />
+    
     <TextView
         android:id="@+id/amountOfPhaseButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="10dp"
+        android:layout_below="@+id/setAlarmAudionButton"
+        android:layout_marginTop="30dp"
         android:editable="false"
         android:text="@string/amountOfPhaseButton"
         android:textSize="15dp" />
@@ -30,7 +39,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/phaseSpinner"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="35dp"
         android:text="@string/setFirstPhase" />
 
     <Button
@@ -39,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/setFirstPhaseButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="35dp"
         android:text="@string/setSecondPhase" />
 
     <Button
@@ -48,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/setSecondPhaseButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="35dp"
         android:text="@string/setThirdPhase" />
 
     <Button
@@ -57,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/setThirdPhaseButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="35dp"
         android:text="@string/setFourthPhase" />
 
 </RelativeLayout>

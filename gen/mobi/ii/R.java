@@ -9,8 +9,9 @@ package mobi.ii;
 
 public final class R {
     public static final class array {
-        public static final int phaseAmountArrays=0x7f050000;
-        public static final int timeArrays=0x7f050001;
+        public static final int dayOfWeek=0x7f050000;
+        public static final int phaseAmountArrays=0x7f050001;
+        public static final int timeArrays=0x7f050002;
     }
     public static final class attr {
     }
@@ -21,47 +22,67 @@ public final class R {
         public static final int notclicked_dot=0x7f020003;
     }
     public static final class id {
-        public static final int alarmTimePicker=0x7f060000;
-        public static final int amountOfPhaseButton=0x7f06000b;
-        public static final int disableAlarmButton=0x7f060001;
-        public static final int editText1=0x7f060011;
-        public static final int enableAlarmButton=0x7f060002;
-        public static final int imageView1=0x7f060013;
-        public static final int imageView2=0x7f060012;
-        public static final int imageView3=0x7f060014;
-        public static final int imageView4=0x7f060015;
-        public static final int imageView5=0x7f060016;
-        public static final int imageView6=0x7f060017;
-        public static final int imageView7=0x7f060018;
-        public static final int imageView8=0x7f060019;
-        public static final int imageView9=0x7f06001a;
-        public static final int onOfToggle=0x7f060004;
-        public static final int phaseSpinner=0x7f06000c;
-        public static final int saveButton=0x7f06000a;
-        public static final int setFirstPhaseButton=0x7f06000d;
-        public static final int setFourthPhaseButton=0x7f060010;
-        public static final int setSecondPhaseButton=0x7f06000e;
-        public static final int setThirdPhaseButton=0x7f06000f;
-        public static final int settingsButton=0x7f060003;
-        public static final int testButton=0x7f060007;
-        public static final int timeLabel=0x7f060008;
-        public static final int timeSpinner=0x7f060009;
-        public static final int volumeText=0x7f060005;
-        public static final int volumeValue=0x7f060006;
+        public static final int MusicList=0x7f060009;
+        public static final int addAlarmButton=0x7f060000;
+        public static final int alarmTimePicker=0x7f06000a;
+        public static final int alarmsList=0x7f060002;
+        public static final int amountOfPhaseButton=0x7f060015;
+        public static final int disableAlarmButton=0x7f06000b;
+        public static final int editText1=0x7f06001b;
+        public static final int enableAlarmButton=0x7f06000c;
+        public static final int fridayCheckBox=0x7f060011;
+        public static final int imageView1=0x7f06001d;
+        public static final int imageView2=0x7f06001c;
+        public static final int imageView3=0x7f06001e;
+        public static final int imageView4=0x7f06001f;
+        public static final int imageView5=0x7f060020;
+        public static final int imageView6=0x7f060021;
+        public static final int imageView7=0x7f060022;
+        public static final int imageView8=0x7f060023;
+        public static final int imageView9=0x7f060024;
+        public static final int mondayCheckBox=0x7f06000d;
+        public static final int phaseSpinner=0x7f060016;
+        public static final int saturdayCheckBox=0x7f060012;
+        public static final int saveButton=0x7f060008;
+        public static final int setAlarmAudionButton=0x7f060014;
+        public static final int setFirstPhaseButton=0x7f060017;
+        public static final int setFourthPhaseButton=0x7f06001a;
+        public static final int setSecondPhaseButton=0x7f060018;
+        public static final int setThirdPhaseButton=0x7f060019;
+        public static final int settingButton=0x7f060001;
+        public static final int sundayCheckBox=0x7f060013;
+        public static final int testButton=0x7f060005;
+        public static final int thursdayCheckBox=0x7f060010;
+        public static final int timeLabel=0x7f060006;
+        public static final int timeSpinner=0x7f060007;
+        public static final int tuesdayCheckBox=0x7f06000e;
+        public static final int volumeText=0x7f060003;
+        public static final int volumeValue=0x7f060004;
+        public static final int wednesdayCheckBox=0x7f06000f;
     }
     public static final class layout {
         public static final int main_layout=0x7f030000;
         public static final int phase_settings_layout=0x7f030001;
-        public static final int settings_layout=0x7f030002;
-        public static final int wake_up_layout=0x7f030003;
+        public static final int pick_up_music=0x7f030002;
+        public static final int set_alarm_layout=0x7f030003;
+        public static final int settings_layout=0x7f030004;
+        public static final int wake_up_layout=0x7f030005;
     }
     public static final class string {
+        public static final int addAlarmButtonLabel=0x7f040014;
         public static final int alarmDisableTogle=0x7f040012;
         public static final int alarmEnableTogle=0x7f040011;
         public static final int amountOfPhaseButton=0x7f040001;
         public static final int app_name=0x7f040000;
+        public static final int cancelButtonLabel=0x7f040017;
         public static final int closeDialogButtonLabel=0x7f040010;
+        public static final int deleteAlarmAlertTitle=0x7f040015;
+        public static final int deleteAlarmButtonLabel=0x7f040016;
+        public static final int fridayLabel=0x7f04001c;
+        public static final int mondayLabel=0x7f040018;
+        public static final int saturdayLabel=0x7f04001d;
         public static final int saveButtonLabel=0x7f04000d;
+        public static final int setAlarmAudionButtonLabel=0x7f040013;
         public static final int setFirstPhase=0x7f040002;
         public static final int setFourthPhase=0x7f040005;
         public static final int setSecondPhase=0x7f040003;
@@ -71,9 +92,13 @@ public final class R {
         public static final int settingsButtonLable=0x7f04000a;
         public static final int startButtonLabel=0x7f04000b;
         public static final int stopButtonLable=0x7f040009;
+        public static final int sundayLabel=0x7f04001e;
         public static final int testButton=0x7f040008;
         public static final int testDialogMessage=0x7f04000f;
         public static final int testDialogTitle=0x7f04000e;
+        public static final int thursdayLabel=0x7f04001b;
+        public static final int tuesdayLabel=0x7f040019;
         public static final int wakeUpMainLabel=0x7f04000c;
+        public static final int wednesdayLabel=0x7f04001a;
     }
 }

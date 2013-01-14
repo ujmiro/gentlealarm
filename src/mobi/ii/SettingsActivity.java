@@ -29,6 +29,7 @@ public class SettingsActivity extends OrmLiteBaseActivity<OrmManager> {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.settings_layout);
 		
+		addSetUpMusicButtonListener();
 		firstButton = (Button) findViewById(R.id.setFirstPhaseButton);
 		addButtonListner(1, firstButton);
 		secondButton = (Button) findViewById(R.id.setSecondPhaseButton);
@@ -39,6 +40,17 @@ public class SettingsActivity extends OrmLiteBaseActivity<OrmManager> {
 		addButtonListner(4, fourthButton);
 				
 		setSpinner();
+	}
+	
+	private void addSetUpMusicButtonListener(){
+		Button button = (Button) findViewById(R.id.setAlarmAudionButton);
+		button.setOnClickListener(new OnClickListener() {
+			
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(), PickUpMusicActivity.class);
+				startActivity(intent);
+			}
+		});
 	}
 	
 	private void addButtonListner(final int buttonNumber, Button button){

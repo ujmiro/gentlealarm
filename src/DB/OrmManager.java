@@ -1,6 +1,7 @@
 package DB;
 
 import DB.POCO.Alarm;
+import DB.POCO.Schedule;
 import DB.POCO.Setting;
 import DB.POCO.User;
 import java.sql.*;
@@ -23,6 +24,7 @@ public class OrmManager extends OrmLiteSqliteOpenHelper {
 		private Dao<User, Integer> userDao = null;
 		private Dao<Alarm, Integer> alarmDao = null;
 		private Dao<Setting, Integer> settingDao = null;
+		private Dao<Schedule, Integer> schedule = null;
 		
 		public OrmManager(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -35,6 +37,7 @@ public class OrmManager extends OrmLiteSqliteOpenHelper {
 				TableUtils.createTable(connectionSource, User.class);
 				TableUtils.createTable(connectionSource, Alarm.class);
 				TableUtils.createTable(connectionSource, Setting.class);
+				TableUtils.createTable(connectionSource, Schedule.class);
 			} catch (SQLException e) {
 				Log.e(OrmManager.class.getName(), "Can't create database", e);
 				throw new RuntimeException(e);
@@ -96,6 +99,13 @@ public class OrmManager extends OrmLiteSqliteOpenHelper {
 				settingDao = getDao(Setting.class);
 			}
 			return settingDao;
+		}
+		
+		public Dao<Schedule, Integer> getScheduleDao() throws SQLException {
+			if (schedule == null) {
+				schedule = getDao(Schedule.class);
+			}
+			return schedule;
 		}
 
 		@Override

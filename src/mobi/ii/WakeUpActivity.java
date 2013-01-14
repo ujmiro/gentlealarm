@@ -2,20 +2,17 @@ package mobi.ii;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import media.managers.SoundManager;
+import DB.AlarmScheduler;
 import DB.OrmManager;
 import DB.POCO.Alarm;
+import DB.POCO.Schedule;
 import DB.POCO.Setting;
 import Singletons.Common;
-import android.app.AlarmManager;
 import android.app.KeyguardManager;
 import android.app.KeyguardManager.KeyguardLock;
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
@@ -33,12 +30,25 @@ public class WakeUpActivity extends OrmLiteBaseActivity<OrmManager> {
 	private ArrayList<Integer> correctOrder = new ArrayList<Integer>();
 	private int check = 0;
 	private ArrayList<ImageView> images = new ArrayList<ImageView>();
+	private Alarm alarm;
+	private Schedule schedule;
+	private AlarmScheduler alarmScheduler;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	    setContentView(R.layout.wake_up_layout);
 	    
+	    alarmScheduler =  new AlarmScheduler(WakeUpActivity.this);
+	    int scheduleId = getIntent().getIntExtra("scheduleId", 10);
+	    try {
+	    	schedule = getHelper().getScheduleDao().queryForId(scheduleId);
+	    	alarm = getHelper().getAlarmDao().queryForId(schedule.getAlarm().getId());
+	    	Common.getInstance().setUser(getHelper().getUserDao().queryForId(alarm.getUser().getId()));
+		} catch (SQLException e) {
+			finish();
+		}
+		
 	    manageImages();
 		unlockScreean();
 		startAlarm(savedInstanceState);
@@ -68,52 +78,33 @@ public class WakeUpActivity extends OrmLiteBaseActivity<OrmManager> {
 	}
 	
 	private void startAlarm(Bundle bundle){
-		int startFrom = getIntent().getIntExtra("startFromPhase", 10);
-		int userId = getIntent().getIntExtra("userId", 10);
 		try {
-		 	Common.getInstance().setUser(getHelper().getUserDao().queryBuilder().where().eq("Id", userId).query().get(0));
-		} catch (SQLException e) {
+			final Setting setting = Common.getInstance().getSettings()[schedule.getPhase()];
+			soundManager = new SoundManager(this);
+			soundManager.startAlarm(setting.getVolume());
+			alarmScheduler.DeleteSchedule(schedule);
+			new Thread(new Runnable() {
+				public void run() {
+					try {
+						Thread.sleep(1000 * setting.getTimeInSeconds());
+						AlarmScheduler scheduler = new AlarmScheduler(WakeUpActivity.this);
+						if (setting.getPhase() == 0){
+							finishWithSuccess();
+						}
+						scheduler.broadCastAlarm();
+						finish();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+				}
+			}).start();
+		}catch (Exception e){
 			finish();
 		}
-		
-		final Setting setting = Common.getInstance().getSettings()[startFrom];
-		soundManager = new SoundManager(this);
-		soundManager.startAlarm(setting.getVolume());
-		
-		new Thread(new Runnable() {
-			public void run() {
-				GregorianCalendar calendar = new GregorianCalendar();
-				try {
-					Thread.sleep(1000 * setting.getTimeInSeconds());
-					if (setting.getPhase() != 0 && check != correctOrder.size()){
-						calendar.add(Calendar.MINUTE, MainActivity.BREAK_TIME);
-						
-						AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-						Intent intent = new Intent(WakeUpActivity.this, WakeUpReceiver.class);
-					    intent.putExtra("userId", Common.getInstance().getUser().getId());
-						intent.putExtra("startFromPhase", setting.getPhase() - 1);
-						
-						PendingIntent pendingIntent = PendingIntent.getBroadcast(WakeUpActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-						alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-					} else if (setting.getPhase() == 0){
-						finishWithSuccess();
-					}
-					finish();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-			}
-		}).start();
 	}
 	
 	private void finishWithSuccess(){
-		Alarm alarm = Common.getInstance().getAlarms()[0];
-		alarm.setExecuted(true);
-		try {
-			getHelper().getAlarmDao().update(alarm);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+		alarmScheduler.finishAlarm(alarm);
 		finish();
 	}
 	

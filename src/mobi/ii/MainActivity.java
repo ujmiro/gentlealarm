@@ -1,188 +1,145 @@
 package mobi.ii;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
+import DB.AlarmScheduler;
 import DB.OrmManager;
 import DB.POCO.Alarm;
 import Singletons.Common;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.TimePicker;
-import android.widget.Toast;
-import android.widget.ToggleButton;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 
 public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
 	
-	private TimePicker timePicker;
-	private PendingIntent pendingIntent;
-	public final static int BREAK_TIME = 1;
+	public List<Alarm> alarmsList;
+	private AlarmAdapter alarmAdapter;
 	
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_layout);
-        
+	@Override
+	public void onResume(){
+		super.onResume();
+		refreashListView();
+	}
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState){
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main_layout);
+		
 		try {
 		 	Common.getInstance().setUser(getHelper().getUserDao().queryBuilder().where().eq("Name", "DefoultUSer").query().get(0));
 		} catch (SQLException e) {
 			finish();
 		}
 		
-		setStatusToggleButton();
-        setTimePicker();
-        addListnerToDisableButton();
-        addListnerToEnableButton();
-        addListnerToSettingsButton();
-    }
-    
-    private void setStatusToggleButton(){
-    	ToggleButton toggle = (ToggleButton) findViewById(R.id.onOfToggle);
-    	toggle.setEnabled(false);
-    	toggle.setChecked(!Common.getInstance().getAlarms()[0].isExecuted());
-    }
-    
-    private void setTimePicker(){
-    	timePicker = (TimePicker) findViewById(R.id.alarmTimePicker);
-        timePicker.setIs24HourView(true);
-        if (new GregorianCalendar().get(Calendar.HOUR_OF_DAY) > 12)
-        	timePicker.setCurrentHour(timePicker.getCurrentHour() + 12);
-        
-        try {
-        	Alarm alarm = Common.getInstance().getAlarms()[0];
-			GregorianCalendar calendar = new GregorianCalendar();
-			calendar.setTimeInMillis(alarm.getAlarmAt());
-			timePicker.setCurrentHour(calendar.get(Calendar.HOUR_OF_DAY));
-			timePicker.setCurrentMinute(calendar.get(Calendar.MINUTE));
-		} catch (Exception e) {
-			Log.w("Exception", "Create main view.");
+		fullFillAlarmsList();
+		addListenerToSettingsButton();
+		addListenerToAddAlarmButton();
+		createAlarmsList();
+	}
+	
+	private void refreashListView(){
+		fullFillAlarmsList();
+		if (alarmAdapter != null)
+			alarmAdapter.notifyDataSetChanged();
+	}
+	
+	private void fullFillAlarmsList(){
+		try {
+			alarmsList = getHelper().getAlarmDao().queryBuilder().where().eq("UserId", Common.getInstance().getUser().getId()).query();
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
-    }
-    
-    private void addListnerToEnableButton(){
-    	Button startButton = (Button) findViewById(R.id.enableAlarmButton);
-        startButton.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				timePicker.clearFocus();
-				AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
-				
-				GregorianCalendar calendar = new GregorianCalendar();
-				if (calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE) >= timePicker.getCurrentHour() * 60 + timePicker.getCurrentMinute()){
-					calendar.add(Calendar.DAY_OF_YEAR, 1);
-				}
-				calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
-				calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
-				calendar.set(Calendar.SECOND, 0);
-				
-				Alarm alarm = Common.getInstance().getAlarms()[0];
-				alarm.setAlarmAt(calendar);
-				alarm.setExecuted(false);
-				try {
-					MainActivity.this.getHelper().getAlarmDao().update(alarm);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				
-				int startFromPhase = 0;
-				for (int i = 1; i <= Common.getInstance().getUser().getPhaseAmount(); ++i){
-					if (calendar.getTimeInMillis() - BREAK_TIME * 60 * 1000 < new GregorianCalendar().getTimeInMillis())
-						break;
-					
-					calendar.add(Calendar.MINUTE, -BREAK_TIME);
-					startFromPhase = i;
-				}
-				
-				Intent intent = new Intent(MainActivity.this, WakeUpReceiver.class);
-			    intent.putExtra("userId", Common.getInstance().getUser().getId());
-				intent.putExtra("startFromPhase", startFromPhase);
-				
-				pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-				
-				
-				alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-				String time =  timePicker.getCurrentHour() + ":" + timePicker.getCurrentMinute();
-				
-				try {
-					FileOutputStream saveTime = openFileOutput("AlarmDateTime", Context.MODE_PRIVATE);
-					saveTime.write((time + ";").getBytes());
-					saveTime.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				
-				Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.alarmEnableTogle) + time, Toast.LENGTH_SHORT);
-				toast.show();
-				setStatusToggleButton();
+	}
+	
+	private void createAlarmsList(){
+		ListView listView = (ListView) findViewById(R.id.alarmsList);
+		alarmAdapter = new AlarmAdapter();
+		listView.setAdapter(alarmAdapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+
+			public void onItemClick(AdapterView<?> parent, View arg1, final int chosen, long arg3) {
+				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+				alertDialogBuilder.setTitle(getResources().getString(R.string.testDialogTitle));
+				alertDialogBuilder.setMessage(getResources().getString(R.string.deleteAlarmAlertTitle))
+								  .setCancelable(false).setNegativeButton(getResources().getString(R.string.cancelButtonLabel), new DialogInterface.OnClickListener() {
+									
+									  public void onClick(DialogInterface dialog, int which) {
+									  }
+								}).setPositiveButton(getResources().getString(R.string.deleteAlarmButtonLabel), new DialogInterface.OnClickListener() {
+									
+									public void onClick(DialogInterface dialog, int which) {
+										new AlarmScheduler(MainActivity.this).finishAlarm(alarmsList.get(chosen));
+										refreashListView();
+									}
+								} );
+				AlertDialog alertDialog = alertDialogBuilder.create();
+				alertDialog.show();
 			}
 		});
-    }
-    
-    public void addListnerToSettingsButton(){
-    	Button settings = (Button) findViewById(R.id.settingsButton);
-    	settings.setOnClickListener(new OnClickListener() {
+	}
+	
+	private void addListenerToAddAlarmButton(){
+		Button add = (Button) findViewById(R.id.addAlarmButton);
+		add.setOnClickListener(new OnClickListener() {
 			
+			public void onClick(View v) {
+				Intent intent = new Intent(getApplicationContext(), SetAlarmActivity.class);
+				startActivity(intent);
+			}
+		});
+	}
+	
+	public void addListenerToSettingsButton() {
+		Button settings = (Button) findViewById(R.id.settingButton);
+		settings.setOnClickListener(new OnClickListener() {
+
 			public void onClick(View v) {
 				Intent intent = new Intent(getApplicationContext(), SettingsActivity.class);
 				startActivity(intent);
 			}
 		});
-    }
-    
-    public void addListnerToDisableButton(){
-    	 Button stopButton = (Button) findViewById(R.id.disableAlarmButton);
-         stopButton.setOnClickListener(new OnClickListener() {
- 			
- 			public void onClick(View v) {
- 				AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
+	}
+	
+	public class AlarmAdapter extends BaseAdapter {
+		
+		public int getCount() {
+			return alarmsList.size();
+		}
 
- 			    Intent updateServiceIntent = new Intent(MainActivity.this, WakeUpReceiver.class);
- 			    PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(MainActivity.this, 0, updateServiceIntent, 0);
+		public Object getItem(int position) {
+			return position;
+		}
 
- 			    try {
- 			        alarmManager.cancel(pendingUpdateIntent);
- 			        Log.w("AlarmManager update was not canceled. ",  "called");
-				} catch (Exception e) {
-					Log.w("AlarmManager update was not canceled. ", e.toString());
-				}
-				Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.alarmDisableTogle), Toast.LENGTH_SHORT);
-				toast.show();
-				
-				Alarm alarm = Common.getInstance().getAlarms()[0];
-				alarm.setExecuted(true);
-				try {
-					MainActivity.this.getHelper().getAlarmDao().update(alarm);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-				setStatusToggleButton();
-	        }
- 		});
-    }
+		public long getItemId(int position) {
+			return position;
+		}
+
+		public View getView(int position, View convertView, ViewGroup parent) {
+			if (convertView != null)
+				return (TextView) convertView;
+
+			TextView tv = new TextView(getApplicationContext());
+			GregorianCalendar calendar = new GregorianCalendar();
+			calendar.setTimeInMillis(alarmsList.get(position).getAlarmAt());
+			tv.setText(calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + 
+					"    " + getResources().getStringArray(R.array.dayOfWeek)[calendar.get(Calendar.DAY_OF_WEEK)]);
+			return tv;
+		}
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

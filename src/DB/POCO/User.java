@@ -17,9 +17,11 @@ public class User {
 	private Date createdAt;
 	@DatabaseField(canBeNull = false, columnName = "PhaseAmount")
 	private int phaseAmount;
-	@ForeignCollectionField(eager = false)
+	@DatabaseField(canBeNull = true, columnName = "SongName")
+	private String songName;
+	@ForeignCollectionField(eager = true)
 	ForeignCollection<Setting> Settings;
-	@ForeignCollectionField(eager = false)
+	@ForeignCollectionField(eager = true)
 	ForeignCollection<Alarm> Alarms;
 	
 	public User() {}
@@ -70,5 +72,13 @@ public class User {
 
 	public void setAlarms(ForeignCollection<Alarm> alarms) {
 		Alarms = alarms;
+	}
+
+	public String getSongName() {
+		return songName;
+	}
+
+	public void setSongName(String songName) {
+		this.songName = songName;
 	}
 }

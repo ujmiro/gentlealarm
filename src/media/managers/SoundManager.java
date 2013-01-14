@@ -1,7 +1,8 @@
 package media.managers;
 
-import java.io.IOException;
+import java.io.FileInputStream;
 
+import Singletons.Common;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -35,19 +36,24 @@ public class SoundManager {
         mediaPlayer.setVolume(1, 1);
         mediaPlayer.setLooping(false);
         
-        AssetFileDescriptor afd;
-		try {
-			afd = activity.getAssets().openFd("sound.mp3");
-			mediaPlayer.setDataSource(afd.getFileDescriptor());
+        try {
+        	String userSound = Common.getInstance().getUser().getSongName();
+        	if (userSound == null){
+        		AssetFileDescriptor afd = activity.getAssets().openFd("sound.mp3");
+	        	mediaPlayer.setDataSource(afd.getFileDescriptor());
+			}else{
+				FileInputStream input = new FileInputStream(activity.getApplicationContext().getFilesDir().getAbsolutePath() + "/" + userSound);
+				mediaPlayer.setDataSource(input.getFD());    
+			}
 			mediaPlayer.prepare();
 		
 			//TODO: add chandling this exceptions
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			try {
+				AssetFileDescriptor afd = activity.getAssets().openFd("sound.mp3");
+				mediaPlayer.setDataSource(afd.getFileDescriptor());
+			} catch (Exception e1) {}
 		}		
         mediaPlayer.start();
 	}

@@ -31,6 +31,10 @@
              	  android:screenOrientation="portrait"/>
         <activity android:name=".PhaseSettingsActivity"
                   android:screenOrientation="portrait"/>
+        <activity android:name=".PickUpMusicActivity"
+            	  android:screenOrientation="portrait"/>
+        <activity android:name=".SetAlarmActivity"
+            	  android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
