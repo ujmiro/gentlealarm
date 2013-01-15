@@ -2,23 +2,18 @@ package mobi.ii;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import DB.AlarmScheduler;
 import DB.OrmManager;
-import DB.POCO.Alarm;
-import Singletons.Common;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -27,6 +22,8 @@ import com.j256.ormlite.android.apptools.OrmLiteBaseActivity;
 public class SetAlarmActivity extends OrmLiteBaseActivity<OrmManager> {
 	
 	private TimePicker timePicker;
+	private ArrayList<CheckBox> checkBoxes = new ArrayList<CheckBox>();
+	private int selected;
 	public final static int BREAK_TIME = 1;
 	
     @Override
@@ -34,9 +31,41 @@ public class SetAlarmActivity extends OrmLiteBaseActivity<OrmManager> {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.set_alarm_layout);
 
+        selected = new GregorianCalendar().get(Calendar.DAY_OF_WEEK);
+        
         setTimePicker();
-        addListnerToDisableButton();
         addListnerToEnableButton();
+        createCheckBoxList();
+    }
+    
+    private void createCheckBoxList(){
+    	checkBoxes.add((CheckBox)findViewById(R.id.sundayCheckBox));
+    	checkBoxes.add((CheckBox)findViewById(R.id.mondayCheckBox));
+    	checkBoxes.add((CheckBox)findViewById(R.id.tuesdayCheckBox));
+    	checkBoxes.add((CheckBox)findViewById(R.id.wednesdayCheckBox));
+    	checkBoxes.add((CheckBox)findViewById(R.id.thursdayCheckBox));
+    	checkBoxes.add((CheckBox)findViewById(R.id.fridayCheckBox));
+    	checkBoxes.add((CheckBox)findViewById(R.id.saturdayCheckBox));
+    	
+    	for (int i = 1; i < 8; ++i){
+    		addCheckBoxListener(checkBoxes.get(i - 1), i);
+    	}
+    }
+    
+    private void addCheckBoxListener(CheckBox checkBox, final int position){
+    	checkBox.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				if (((CheckBox)v).isChecked()){
+					for (CheckBox box : checkBoxes){
+						box.setChecked(false);
+					}
+					((CheckBox)v).setChecked(true);
+					selected = position;
+				} else {
+					selected = new GregorianCalendar().get(Calendar.DAY_OF_WEEK);
+				}
+			}
+		});
     }
     
     private void setTimePicker(){
@@ -61,6 +90,19 @@ public class SetAlarmActivity extends OrmLiteBaseActivity<OrmManager> {
 		}
     }
     
+    private int calculateDayShift(TimePicker timePicker){
+    	int shift = 0;
+    	GregorianCalendar calendar = new GregorianCalendar();
+		if (calendar.get(Calendar.DAY_OF_WEEK) < selected){
+			shift = selected - calendar.get(Calendar.DAY_OF_WEEK); 
+		} else if (calendar.get(Calendar.DAY_OF_WEEK) > selected){
+			shift = 7 - calendar.get(Calendar.DAY_OF_WEEK) + selected;
+		} else if (calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE) >= timePicker.getCurrentHour() * 60 + timePicker.getCurrentMinute()){
+			shift = 7;
+		}
+		return shift;
+    }
+    
     private void addListnerToEnableButton(){
     	Button startButton = (Button) findViewById(R.id.enableAlarmButton);
         startButton.setOnClickListener(new OnClickListener() {
@@ -69,12 +111,10 @@ public class SetAlarmActivity extends OrmLiteBaseActivity<OrmManager> {
 				timePicker.clearFocus();
 				
 				GregorianCalendar calendar = new GregorianCalendar();
-				if (calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE) >= timePicker.getCurrentHour() * 60 + timePicker.getCurrentMinute()){
-					calendar.add(Calendar.DAY_OF_YEAR, 1);
-				}
 				calendar.set(Calendar.HOUR_OF_DAY, timePicker.getCurrentHour());
 				calendar.set(Calendar.MINUTE, timePicker.getCurrentMinute());
 				calendar.set(Calendar.SECOND, 0);
+				calendar.add(Calendar.DAY_OF_YEAR, calculateDayShift(timePicker));
 				AlarmScheduler scheduler = new AlarmScheduler(SetAlarmActivity.this);
 				scheduler.scheduleAlarms(calendar);
 				scheduler.broadCastAlarm();
@@ -90,38 +130,9 @@ public class SetAlarmActivity extends OrmLiteBaseActivity<OrmManager> {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+		        finish();
 			}
 		});
-    }
-    
-    public void addListnerToDisableButton(){
-    	 Button stopButton = (Button) findViewById(R.id.disableAlarmButton);
-         stopButton.setOnClickListener(new OnClickListener() {
- 			
- 			public void onClick(View v) {
- 				AlarmManager alarmManager = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-
- 			    Intent updateServiceIntent = new Intent(SetAlarmActivity.this, WakeUpReceiver.class);
- 			    PendingIntent pendingUpdateIntent = PendingIntent.getBroadcast(SetAlarmActivity.this, 0, updateServiceIntent, 0);
-
- 			    try {
- 			        alarmManager.cancel(pendingUpdateIntent);
- 			        Log.w("AlarmManager update was not canceled. ",  "called");
-				} catch (Exception e) {
-					Log.w("AlarmManager update was not canceled. ", e.toString());
-				}
-				Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.alarmDisableTogle), Toast.LENGTH_SHORT);
-				toast.show();
-				
-				Alarm alarm = Common.getInstance().getAlarms()[0];
-				alarm.setExecuted(true);
-				try {
-					SetAlarmActivity.this.getHelper().getAlarmDao().update(alarm);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-	        }
- 		});
     }
 }
 

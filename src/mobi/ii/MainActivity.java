@@ -75,8 +75,8 @@ public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
 
 			public void onItemClick(AdapterView<?> parent, View arg1, final int chosen, long arg3) {
 				AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
-				alertDialogBuilder.setTitle(getResources().getString(R.string.testDialogTitle));
-				alertDialogBuilder.setMessage(getResources().getString(R.string.deleteAlarmAlertTitle))
+				alertDialogBuilder.setTitle(getResources().getString(R.string.deleteAlarmAlertTitle));
+				alertDialogBuilder.setMessage(getResources().getString(R.string.deleteAlarmAlertMessage))
 								  .setCancelable(false).setNegativeButton(getResources().getString(R.string.cancelButtonLabel), new DialogInterface.OnClickListener() {
 									
 									  public void onClick(DialogInterface dialog, int which) {

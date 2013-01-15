@@ -43,6 +43,11 @@ public class WakeUpActivity extends OrmLiteBaseActivity<OrmManager> {
 	    int scheduleId = getIntent().getIntExtra("scheduleId", 10);
 	    try {
 	    	schedule = getHelper().getScheduleDao().queryForId(scheduleId);
+	    	if (schedule == null){
+	    		alarmScheduler.broadCastAlarm();
+	    		finish();
+	    		return;
+	    	}
 	    	alarm = getHelper().getAlarmDao().queryForId(schedule.getAlarm().getId());
 	    	Common.getInstance().setUser(getHelper().getUserDao().queryForId(alarm.getUser().getId()));
 		} catch (SQLException e) {
@@ -138,7 +143,8 @@ public class WakeUpActivity extends OrmLiteBaseActivity<OrmManager> {
 	public void onDestroy(){
 		super.onDestroy();
 		lockScreean();
-		soundManager.stopAlarm();
+		if (soundManager != null)
+			soundManager.stopAlarm();
 	}
 	
 	private void unlockScreean(){
@@ -152,6 +158,8 @@ public class WakeUpActivity extends OrmLiteBaseActivity<OrmManager> {
 	}
 	
 	private void lockScreean(){
+		if (keyguard == null || wl == null)
+			return;
 		keyguard.reenableKeyguard();
 		wl.release();
 	}

@@ -20,6 +20,30 @@
 	<string name="closeDialogButtonLabel">Close</string>
 	<string name="alarmEnableTogle">Alarm set to</string>
 	<string name="alarmDisableTogle">Alarm disabled</string>
+	<string name="setAlarmAudionButtonLabel">Set alarm tone</string>
+	<string name="addAlarmButtonLabel">Add alarm</string>
+	<string name="deleteAlarmAlertTitle">Delete</string>
+	<string name="deleteAlarmAlertMessage">Delete selected alarm ?</string>
+	<string name="deleteAlarmButtonLabel">Delete</string>
+	<string name="cancelButtonLabel">Cancel</string>
+	<string name="mondayLabel">M</string>
+	<string name="tuesdayLabel">T</string>
+	<string name="wednesdayLabel">W</string>
+	<string name="thursdayLabel">T</string>
+	<string name="fridayLabel">P</string>
+	<string name="saturdayLabel">S</string>
+	<string name="sundayLabel">S</string>
+	
+	<string-array name="dayOfWeek">
+	    <item>Empty</item>
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>	
 	
     <string-array name="phaseAmountArrays">
         <item>1</item>

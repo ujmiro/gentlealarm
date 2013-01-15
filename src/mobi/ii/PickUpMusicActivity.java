@@ -43,7 +43,7 @@ public class PickUpMusicActivity extends OrmLiteBaseActivity<OrmManager> {
 		
 		soundsList.setOnItemClickListener(new OnItemClickListener() {
 	          
-			public void onItemClick(AdapterView parent, View v, int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				if (Common.getInstance().getUser().getSongName() != null){
 					getApplicationContext().deleteFile(Common.getInstance().getUser().getSongName());
 					Common.getInstance().getUser().setSongName(null);

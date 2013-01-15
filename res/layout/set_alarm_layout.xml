@@ -12,25 +12,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="26dp" />
 
-    <Button
-        android:id="@+id/disableAlarmButton"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="21dp"
-        android:text="@string/stopButtonLable" />
-
-    <Button
-        android:id="@+id/enableAlarmButton"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/disableAlarmButton"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="76dp"
-        android:text="@string/startButtonLabel"
-        android:textSize="20dp" />
-
     <CheckBox
         android:id="@+id/mondayCheckBox"
         android:layout_width="wrap_content"
@@ -88,5 +69,15 @@
         android:layout_alignBottom="@+id/saturdayCheckBox"
         android:layout_toRightOf="@+id/saturdayCheckBox"
         android:text="@string/sundayLabel" />
+
+    <Button
+        android:id="@+id/enableAlarmButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/fridayCheckBox"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="54dp"
+        android:text="@string/startButtonLabel"
+        android:textSize="20dp" />
 
 </RelativeLayout>
