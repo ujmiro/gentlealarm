@@ -1,1 +1,2 @@
 Przeprowadzilem testy aplikacji na tablecie Google Nexus 7. Wszystkie zaimplementowane w iteracji 2 funkcje dzialaja poprawnie.
+Przeprowadziłem finalne testy aplikacji na tablecie Google Nexus 7. Zaimplementowane w 3 iteracji funkcjonalnośći takie jak dodanie personalizacji alarmu, angielskiej wersji językowej, obsługa odgrywania wielu alarmów działają.
