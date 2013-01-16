@@ -33,6 +33,8 @@ public class WakeUpActivity extends OrmLiteBaseActivity<OrmManager> {
 	private Alarm alarm;
 	private Schedule schedule;
 	private AlarmScheduler alarmScheduler;
+	private boolean finished = false;
+	private boolean alarmDisabled = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -96,7 +98,9 @@ public class WakeUpActivity extends OrmLiteBaseActivity<OrmManager> {
 						if (setting.getPhase() == 0){
 							finishWithSuccess();
 						}
-						scheduler.broadCastAlarm();
+						if (!alarmDisabled){
+							scheduler.broadCastAlarm();
+						}
 						finish();
 					} catch (InterruptedException e) {
 						e.printStackTrace();
@@ -110,7 +114,15 @@ public class WakeUpActivity extends OrmLiteBaseActivity<OrmManager> {
 	
 	private void finishWithSuccess(){
 		alarmScheduler.finishAlarm(alarm);
+		alarmDisabled = true;
 		finish();
+	}
+	
+	public void finish(){
+		if (!finished){
+			finished = true;
+			super.finish();
+		}
 	}
 	
 	private void addImageListner(final ImageView imageView, final int number){
@@ -119,6 +131,9 @@ public class WakeUpActivity extends OrmLiteBaseActivity<OrmManager> {
 			private int myNumber = number;
 			
 			public void onClick(View v) {
+				if (check >= correctOrder.size())
+					return;
+				
 				if (correctOrder.get(check) == myNumber){
 					imageView.setImageResource(R.drawable.clicked_dot);
 					++check;

@@ -131,10 +131,8 @@ public class MainActivity extends OrmLiteBaseActivity<OrmManager> {
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
-			if (convertView != null)
-				return (TextView) convertView;
-
 			TextView tv = new TextView(getApplicationContext());
+			tv.setTextSize(30);
 			GregorianCalendar calendar = new GregorianCalendar();
 			calendar.setTimeInMillis(alarmsList.get(position).getAlarmAt());
 			tv.setText(calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + 

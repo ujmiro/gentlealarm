@@ -102,6 +102,7 @@ public class PickUpMusicActivity extends OrmLiteBaseActivity<OrmManager> {
 				return (TextView) convertView;
 
 			TextView tv = new TextView(getApplicationContext());
+			tv.setTextSize(20);
 			soundcursor.moveToPosition(position);
 			tv.setText(soundcursor.getString(soundcursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME)));
 			return tv;
